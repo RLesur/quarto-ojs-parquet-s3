@@ -1,0 +1,62 @@
+---
+title: "Quarto ojs DuckDB with a parquet file stored in MinIO"
+author: Romain Lesur
+---
+
+## Context
+
+We assume that we are in the following context: **a parquet file stored in MinIO and publicly available**.\
+Since this file is publicly available, **we do not want to attach it in the Quarto notebook**.
+
+The penguins dataset is available at <https://minio.lab.sspcloud.fr/f7sggu/diffusion/penguins.parquet>.
+
+## DuckDB configuration
+
+DuckDB can be configured to read from a S3 compatible storage, see <https://duckdb.org/docs/sql/configuration.html>.
+
+Here, since the parquet file is publicly available, we only need to override the `s3_endpoint` variable:
+
+```{ojs}
+configured_client = {
+  const client = await DuckDBClient.of();
+  await client.sql`
+    SET s3_endpoint='minio.lab.sspcloud.fr'
+  `;
+  return client;
+}
+```
+
+## Read a parquet file 
+
+Since the S3 endpoint is properly configured, the address of the parquet file is now:
+
+```{ojs}
+url = 's3://f7sggu/diffusion/penguins.parquet'
+```
+
+As explained in the [DuckDB help page on parquet](https://duckdb.org/docs/data/parquet.html), we can create [a view from a parquet file](https://duckdb.org/docs/data/parquet.html#inserts-and-views):
+
+```{ojs}
+db = {
+  await configured_client.query(`
+    CREATE VIEW penguins AS 
+    SELECT * FROM read_parquet('${url}');
+  `);
+  return configured_client
+}
+```
+
+## Request the parquet file
+
+Now, we can request the parquet file:
+
+```{ojs}
+res = db.sql`
+  SELECT * FROM penguins LIMIT 10
+`
+```
+
+```{ojs}
+viewof table = Inputs.table(res)
+```
+
