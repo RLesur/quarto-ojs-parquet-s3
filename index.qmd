@@ -60,3 +60,10 @@ res = db.sql`
 viewof table = Inputs.table(res)
 ```
 
+## Configuration informations
+
+This notebook was rendered with Quarto 1.3.49
+
+## Source
+
+See <https://github.com/RLesur/quarto-ojs-parquet-s3>.
