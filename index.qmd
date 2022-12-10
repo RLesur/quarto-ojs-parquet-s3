@@ -17,7 +17,7 @@ DuckDB can be configured to read from a S3 compatible storage, see <https://duck
 Here, since the parquet file is publicly available, we only need to override the `s3_endpoint` variable:
 
 ```{ojs}
-configured_client = {
+configuredClient = {
   const client = await DuckDBClient.of();
   await client.sql`
     SET s3_endpoint='minio.lab.sspcloud.fr'
@@ -38,11 +38,11 @@ As explained in the [DuckDB help page on parquet](https://duckdb.org/docs/data/p
 
 ```{ojs}
 db = {
-  await configured_client.query(`
+  await configuredClient.query(`
     CREATE VIEW penguins AS 
     SELECT * FROM read_parquet('${url}');
   `);
-  return configured_client
+  return configuredClient
 }
 ```
 
