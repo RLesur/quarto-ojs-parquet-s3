@@ -1,5 +1,5 @@
 ---
-title: "Quarto ojs DuckDB with a parquet file stored in MinIO"
+title: "Quarto ojs DuckDB with a parquet file stored in a S3 storage"
 author: Romain Lesur
 ---
 
